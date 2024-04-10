@@ -101,4 +101,4 @@ PS > kubectl delete pod ${pod-name}
 
 # And now?
 
-|[Previous](..\README.md)|[Next](..\1_workloads_schedulers\README.md)|
+|[Previous](../README.md)|[Next](../1_workloads_schedulers/README.md)|
