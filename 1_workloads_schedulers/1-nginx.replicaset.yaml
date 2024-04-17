@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-replicaset
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      type: reverse-proxy
+  template:
+    metadata:
+      labels:
+        type: reverse-proxy
+    spec:
+      containers:
+      - name: nginx-replicable
+        image: nginx

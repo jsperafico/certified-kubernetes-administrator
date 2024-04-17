@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: service-pod
+spec:
+    containers:
+      - name: service-pod
+        image: nginx
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution: # Hard requirement
+          nodeSelectorTerms:
+            - matchExpression:
+              - key: disk
+                operator: In
+#                operator: NotIn
+                values: ssd
+#        preferredDuringSchedulingIgnoredDuringExecution: # Soft requirement
