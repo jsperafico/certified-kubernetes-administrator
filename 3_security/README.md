@@ -113,6 +113,23 @@ PS > kubectl delete -f .\3_security\9-nginx.secretenv.yaml
 PS > kubectl delete secret special-password
 ```
 
+# Security Context
+
+When running a pod, your containers should have the minimum amount of priviledges in case of any vulnerability.
+By default, in most cases, your container will be "root" witch means an "admin" for that container.
+
+```powershell
+PS > kubectl apply -f .\3_security\10-non.root.yaml
+PS > kubectl exec -it busybox -- ps
+PS > kubectl exec -it busybox -- touch /tmp/test.txt
+PS > kubectl exec -it busybox -- ls -l /tmp
+PS > kubectl delete -f .\3_security\10-non.root.yaml
+```
+
+Obviously, the example above is heavily reliant on your image creation and your application. 
+Meaning, a application that requires higher priviledge to run, requires from the developer
+more care and attention while establishing the users and group in the operating system.
+
 # And now?
 
 |[Previous](../2_services_networking/README.md)|[Next](../4_storage/README.md)|
