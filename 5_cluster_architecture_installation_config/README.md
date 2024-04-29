@@ -13,7 +13,7 @@ If not already, download an ISO for your preferable Linux Operating System. You 
 
 ```powershell
 PS > mkdir C:\vms
-PS > .\5_cluster_architecture_installation_config\iso-downloader.ps1 -Path "C:\vms" -FileName "ubuntu-server"
+PS > .\iso-downloader.ps1 -Path "C:\vms" -FileName "ubuntu-server"
 ```
 
 The following steps require Powershel Terminal in administrator mode.
@@ -69,10 +69,10 @@ ssh k8s@ip-address-of-vm
 sudo su
 
 # The `YOUR_MACHINE_NAME` can be seen by running the first powershell statement in this readme file.
-curl http://DESKTOP-DS0BQBE:8000/containerd.sh > containerd.sh
-curl http://DESKTOP-DS0BQBE:8000/kubernetes-main.sh > kubernetes.sh
+curl http://YOUR_MACHINE_NAME:8000/containerd.sh > containerd.sh
+curl http://YOUR_MACHINE_NAME:8000/kubernetes-main.sh > kubernetes.sh
 # or
-# curl http://DESKTOP-DS0BQBE:8000/5_cluster_architecture_installation_config/kubernetes-node.sh > kubernetes.sh
+# curl http://YOUR_MACHINE_NAME:8000/kubernetes-node.sh > kubernetes.sh
 
 chmod +x containerd.sh kubernetes.sh
 ./containerd.sh
@@ -86,7 +86,7 @@ At this point, copy the `kubeadm join` statement in your `k8s-main` VM and paste
 It should appear something like this: 
 
 ```sh
-kubeadm join 192.168.72.27:6443 --token f8rp7s.gw7p2hmc9r5lmgjq --discovery-token-ca-cert-hash sha256:fa081246c9a871c3e57d5ffaf75ca748da8eff9e22203a6264f9eeb00c30d724
+kubeadm join [MAIN-IP]:6443 --token [AUTO-GENERATED] --discovery-token-ca-cert-hash sha256:[AUTO_GENERATED]
 ```
 
 Now, you cluster should have 2 nodes sucessfully.
