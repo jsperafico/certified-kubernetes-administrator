@@ -8,3 +8,21 @@ apt update
 apt install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 
+ipv4_address=$(ip a | grep 'inet ' | grep -w 'eth0' | awk '{print $2}')
+gateway_address=$(ip route | grep default | awk '{print $3}')
+
+cat <<EOF | sudo tee /etc/netplan/00-installer-config.yaml
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: true
+      addresses: [$ipv4_address]
+      gateway4: $gateway_address
+      nameservers:
+        addresses: [8.8.8.8]
+EOF
+
+sudo netplan apply
+
+sleep $((120 - $(date +%S) ))
