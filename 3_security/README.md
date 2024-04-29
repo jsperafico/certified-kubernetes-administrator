@@ -38,7 +38,7 @@ PS > kubectl get clusterrolebinding
 ## Asymetric Key Encryption
 
 Uses public and private keys to encrypt and decrypt data. When one is used to perform a encryption, other should be used to decrypt.
-Same goes the otherway around. To exemplify, use `Git Bash` inside your machine to generate a new key-pair.
+Same goes the otherway around.
 
 In admin mode, plase install openssl:
 
