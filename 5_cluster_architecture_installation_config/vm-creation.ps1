@@ -1,7 +1,7 @@
 [CmdletBinding()]
 Param (
     [Parameter()]
-    [string]$Network = "Default Switch",
+    [string]$Network = "k8s",
 
     [Parameter(Mandatory=$true)]
     [string]$Path,

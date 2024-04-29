@@ -4,7 +4,8 @@ Let's start by serving the `shell script` files in any webserver. Open any power
 Please keep in mind that python is a personal preference of mine, you don't need to use specifically this one.
 
 ```powershell
-Write-Host "http://$(hostname):8000/"
+# Make sure your are in the same folder as this file.
+Write-Host "curl http://$(hostname):8000/"
 python -m http.server --directory .\
 ```
 
@@ -19,8 +20,8 @@ The following steps require Powershel Terminal in administrator mode.
 
 ```powershell
 PS > cd $WorkDirectory # same as this file
-PS > .\5_cluster_architecture_installation_config\vm-creation.ps1 -Path "C:\vms" -Name "k8s-main" -IsoName "ubuntu-server.iso" -Size "s"
-PS > .\5_cluster_architecture_installation_config\vm-creation.ps1 -Path "C:\vms" -Name "k8s-node" -IsoName "ubuntu-server.iso" -Size "xs"
+PS > .\vm-creation.ps1 -Path "C:\vms" -Name "k8smain" -IsoName "ubuntu-server.iso" -Size "s"
+PS > .\vm-creation.ps1 -Path "C:\vms" -Name "k8snode" -IsoName "ubuntu-server.iso" -Size "xs"
 ```
 
 Once you first start the VM, the instalation will be required, then follow:
@@ -50,7 +51,7 @@ Once you first start the VM, the instalation will be required, then follow:
 Login in the machine to double check the installation and then perform:
 
 ```sh
-ip addr
+ip -c a
 ```
 
 Copy your Ip Address, you will use to ssh later on.
@@ -68,10 +69,10 @@ ssh k8s@ip-address-of-vm
 sudo su
 
 # The `YOUR_MACHINE_NAME` can be seen by running the first powershell statement in this readme file.
-curl http://YOUR_MACHINE_NAME:8000/5_cluster_architecture_installation_config/containerd.sh > containerd.sh
-curl http://YOUR_MACHINE_NAME:8000/5_cluster_architecture_installation_config/kubernetes-main.sh > kubernetes.sh
+curl http://DESKTOP-DS0BQBE:8000/containerd.sh > containerd.sh
+curl http://DESKTOP-DS0BQBE:8000/kubernetes-main.sh > kubernetes.sh
 # or
-# curl http://YOUR_MACHINE_NAME:8000/5_cluster_architecture_installation_config/kubernetes-node.sh > kubernetes.sh
+# curl http://DESKTOP-DS0BQBE:8000/5_cluster_architecture_installation_config/kubernetes-node.sh > kubernetes.sh
 
 chmod +x containerd.sh kubernetes.sh
 ./containerd.sh
