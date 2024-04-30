@@ -1,5 +1,7 @@
+swapoff -a
+
 apt update
-apt install -y apt-transport-https ca-certificates gpg
+apt install -y apt-transport-https ca-certificates gpg iputils-ping
 
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
@@ -27,10 +29,12 @@ sudo netplan apply
 
 sleep $((120 - $(date +%S) ))
 
-kubeadm init --pod-network-cidr=10.244.0.0/16
+kubeadm init
 
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
 
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+systemctl enable kubelet

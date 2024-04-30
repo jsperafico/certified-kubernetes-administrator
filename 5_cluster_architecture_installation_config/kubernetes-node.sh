@@ -1,5 +1,7 @@
+swapoff -a
+
 apt update
-apt install -y apt-transport-https ca-certificates gpg
+apt install -y apt-transport-https ca-certificates gpg iputils-ping
 
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
@@ -26,3 +28,5 @@ EOF
 sudo netplan apply
 
 sleep $((120 - $(date +%S) ))
+
+systemctl enable kubelet
