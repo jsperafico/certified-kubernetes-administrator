@@ -82,7 +82,7 @@ chmod +x containerd.sh kubernetes.sh
 A quick disclaimer here... `Kubeadm` is being used in [kubernetes-main.sh](./kubernetes-main.sh) and
 [kubernetes-node.sh](./kubernetes-node.sh)  and it allows the user to quickly provision a secure Kubernetes cluster.
 
-At this point, copy the `kubeadm join` statement in your `k8s-main` VM and paste it at your `k8s-node` VM.
+At this point, copy the `kubeadm join` statement in your `k8smain` VM and paste it at your `k8snode` VM.
 It should appear something like this: 
 
 ```sh
