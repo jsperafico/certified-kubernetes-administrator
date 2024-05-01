@@ -100,8 +100,8 @@ You always have the possibility to create a service account for it as seen in [R
 
 ## Upgrading your Kubernetes Cluster
 
-The process it`s quite well described on [kubeadm-upgrade](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/).
-Nonetheless, let`s have a quick cheat sheet:
+The process it's quite well described on [kubeadm-upgrade](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/).
+Nonetheless, let's have a quick cheat sheet:
 
 ```sh
 sudo su
