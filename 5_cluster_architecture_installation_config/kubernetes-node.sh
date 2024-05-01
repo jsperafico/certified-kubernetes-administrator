@@ -1,4 +1,5 @@
 swapoff -a
+sed -i '/\bswap\b/d' /etc/fstab
 
 apt update
 apt install -y apt-transport-https ca-certificates gpg iputils-ping
