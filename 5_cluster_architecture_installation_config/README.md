@@ -89,7 +89,14 @@ It should appear something like this:
 kubeadm join [MAIN-IP]:6443 --token [AUTO-GENERATED] --discovery-token-ca-cert-hash sha256:[AUTO_GENERATED]
 ```
 
-Now, you cluster should have 2 nodes sucessfully.
+Now, you cluster should have 2 nodes sucessfully. At `k8smain` you can acquire the content to config your local machine:
+
+```sh
+cat /etc/kubernetes/admin.conf
+```
+
+Just copy the content to your `C:\Users\YOUR_USER\.kube\config` file. If file and folder doesn't exists, make sure to create.
+You always have the possibility to create a service account for it as seen in [README](../3_security/README.md) on section 3.
 
 ## Upgrading your Kubernetes Cluster
 
