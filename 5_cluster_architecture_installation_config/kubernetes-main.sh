@@ -39,3 +39,6 @@ chown $(id -u):$(id -g) $HOME/.kube/config
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 systemctl enable kubelet
+
+mkdir -p /data/volumes/pv1
+chmod 777 /data/volumes/pv1

@@ -1,0 +1,9 @@
+global:
+  storageClass: "local-storage"
+controller:
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: "local-storage"
+    size: 1Gi
+    mountPath: /bitnami/kafka

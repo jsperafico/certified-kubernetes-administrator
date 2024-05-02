@@ -31,3 +31,6 @@ sudo netplan apply
 sleep $((120 - $(date +%S) ))
 
 systemctl enable kubelet
+
+mkdir -p /data/volumes/pv1
+chmod 777 /data/volumes/pv1

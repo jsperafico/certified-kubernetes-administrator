@@ -98,6 +98,48 @@ cat /etc/kubernetes/admin.conf
 Just copy the content to your `C:\Users\YOUR_USER\.kube\config` file. If file and folder doesn't exists, make sure to create.
 You always have the possibility to create a service account for it as seen in [README](../3_security/README.md) on section 3.
 
+## Kafka in this config
+
+Aiming to validate this configuration, let's spin up a Kafka cluster:
+
+```powershell
+cd .\5_cluster_architecture_installation_config\kafka\
+kubectl create ns kafka
+kubectl apply -f .\0-storage.kafka.yaml
+helm install kafka bitnami/kafka --version 28.1.1 --namespace kafka -f kafka.values.yaml
+
+$secret = kubectl get secret kafka-user-passwords --namespace kafka -o json | ConvertFrom-Json
+$clientPasswordsBase64 = $secret.data.'client-passwords'
+$clientPasswords = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($clientPasswordsBase64))
+$clientPassword = $clientPasswords.Split(',')[0].Trim()
+$clientPassword
+"security.protocol=SASL_PLAINTEXT" | Out-File -FilePath client.properties
+"sasl.mechanism=SCRAM-SHA-256" | Add-Content -Path client.properties
+"sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=`"user1`" password=`"$clientPassword`"; " | Add-Content -Path client.properties
+
+kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.7.0-debian-12-r3 --namespace kafka --command -- sleep infinity       
+kubectl cp --namespace kafka /path/to/client.properties kafka-client:/tmp/client.properties
+kubectl exec --tty -i kafka-client --namespace kafka -- bash
+```
+Once inside `kafka-client` let's try to product any message:
+
+```sh
+kafka-console-producer.sh \
+    --producer.config /tmp/client.properties \
+    --broker-list kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9092 \
+    --topic test
+```
+
+To delete what it was created, please do the following:
+
+```powershell
+kubectl delete pod kafka-client -n kafka
+helm uninstall kafka --namespace kafka
+kubectl delete -f .\0-storage.kafka.yaml
+kubectl delete ns kafka
+```
+
+
 ## Upgrading your Kubernetes Cluster
 
 The process it's quite well described on [kubeadm-upgrade](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/).
