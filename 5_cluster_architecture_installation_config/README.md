@@ -20,8 +20,8 @@ The following steps require Powershel Terminal in administrator mode.
 
 ```powershell
 PS > cd $WorkDirectory # same as this file
-PS > .\vm-creation.ps1 -Path "C:\vms" -Name "k8smain" -IsoName "ubuntu-server.iso" -Size "s"
-PS > .\vm-creation.ps1 -Path "C:\vms" -Name "k8snode" -IsoName "ubuntu-server.iso" -Size "xs"
+PS > .\vm-creation.ps1 -Path "C:\vms" -Name "k8smain" -IsoName "ubuntu-server.iso" -Size "xs"
+PS > .\vm-creation.ps1 -Path "C:\vms" -Name "k8snode" -IsoName "ubuntu-server.iso" -Size "s"
 ```
 
 Once you first start the VM, the instalation will be required, then follow:
@@ -106,7 +106,7 @@ Aiming to validate this configuration, let's spin up a Kafka cluster:
 cd .\5_cluster_architecture_installation_config\kafka\
 kubectl create ns kafka
 kubectl apply -f .\0-storage.kafka.yaml
-helm install kafka bitnami/kafka --version 28.1.1 --namespace kafka -f kafka.values.yaml
+helm install kafka bitnami/kafka --version 28.2.0 --namespace kafka -f kafka.values.yaml
 
 $secret = kubectl get secret kafka-user-passwords --namespace kafka -o json | ConvertFrom-Json
 $clientPasswordsBase64 = $secret.data.'client-passwords'
@@ -117,7 +117,7 @@ $clientPassword
 "sasl.mechanism=SCRAM-SHA-256" | Add-Content -Path client.properties
 "sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=`"user1`" password=`"$clientPassword`"; " | Add-Content -Path client.properties
 
-kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.7.0-debian-12-r3 --namespace kafka --command -- sleep infinity       
+kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:3.7.0-debian-12-r3 --namespace kafka --command -- sleep infinity
 kubectl cp --namespace kafka /path/to/client.properties kafka-client:/tmp/client.properties
 kubectl exec --tty -i kafka-client --namespace kafka -- bash
 ```
@@ -139,7 +139,6 @@ kubectl delete -f .\0-storage.kafka.yaml
 kubectl delete ns kafka
 ```
 
-
 ## Upgrading your Kubernetes Cluster
 
 The process it's quite well described on [kubeadm-upgrade](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/).
@@ -159,6 +158,34 @@ systemctl restart kubelet
 ```
 
 ## Designing from Scratch
+
+On 90% of cases, this is highly disencouraged since it brings an aweful lot of overhead and complexity to yourself.
+Configurations may drastically change from one version to the other, leading to manual ocnfiguration and severe down time
+while trouble shooting.
+
+Nonetheless, it doesn't mean isn't helpful to learn how to troubleshoot and intricacies of what compeses Kubernetes.
+Things to keep in mind:
+
+1) Depending on what you are configuring, you will need to download the binaries manually. They will be available at [github](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.30.md). Additionally, [ETCD](https://github.com/etcd-io/etcd/releases/tag/v3.5.13) should be downloaded as well. Overall the process is RSA Key -> (CA CNF) -> CSR -> x509 CRT.
+
+2) Cerificate Authority configuration: Each component from Kubernetes Main (kube-controller-manager, kube-apiserver, etcd, kube-scheduler) has it's own certificate, guarateeing a secure connection with among each other. Each of those components can be hosted on their own server, therefore another reason for certificates.
+
+3) ETCD is a ditributed and reliable key-value store and only communicates with kube-apiserver. Make sure you have a valid, even if self-signed, certificate to register your ETCD. Remember to add a CN (Common Name) for your certificate.
+
+4) kube-apiserver, don't need introductions, since I was already explained multiple times. Make sure you have a valid, even if self-signed, certificate to register your Api Server. Remember to add a CN (Common Name) for your certificate. Additionally, you will need another certificate for your Service Accounts Issuer, so make sure to have it.
+
+    1) Since kube-apiserver is the only component that interacts with etcd and over there it can contains highly sensitive information, a encription configuration must be set. For this, make sure to double check the `kind: EncriptionConfig` as kubernetes YAML config file. 
+
+    2) To assist your troubleshooting, please use `sudo journalctl -u kube-apiserver`. There you can see the logs of your `kube-apiserver` proccess.
+
+5) Kube Controller Manager: tracks and moves resources from a state to the desire state. Those resources are divided by type and can be segregated into multiple controller managers, if needed. A resource type can be: Node, Endpoint, Replication, Service Account. Make sure you have a valid, even if self-signed, certificate to register your Api Server. Remember to add a CN (Common Name) for your certificate.
+
+6) Kube Scheduler: Fotunately, once you create one of the components the rest is quite the same. Make sure you have a valid, even if self-signed, certificate to register your Api Server. Remember to add a CN (Common Name) for your certificate.  
+
+That's settle the Kubernetes Main instance configuration. So, for the Worker nodes...
+
+
+
 
 ## Deleting your VMs
 

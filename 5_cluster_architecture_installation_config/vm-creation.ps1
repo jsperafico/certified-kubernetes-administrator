@@ -48,8 +48,8 @@ if ((Test-Path "$Path\$Name")) {
 }
 
 $vmSettings = @{
-    "XS" = @(1, 1GB, 10GB)
-    "S"  = @(2, 2GB, 20GB)
+    "XS" = @(2, 2GB, 20GB)
+    "S"  = @(4, 4GB, 30GB)
 }
 
 $vCpu, $vMem, $vHdd = $vmSettings[$Size]
